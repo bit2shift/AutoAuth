@@ -1,0 +1,5 @@
+# ignore SMF files
+Widget/*
+!Widget/.buildpath
+!Widget/.project
+!Widget/widget
