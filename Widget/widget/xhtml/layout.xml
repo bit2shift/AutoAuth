@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE layout [
+	<!ELEMENT layout (head, body+)>
+	<!ENTITY % xhtml PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "xhtml1-transitional.dtd">
+	%xhtml;
+]>
+<layout>
+	<head>
+		<title>AutoAuth</title>
+		<style type="text/css">
+			@font-face
+			{
+				font-family: bit2shift;
+				src: url('media/bit2shift.ttf');
+			}
+			body
+			{
+				background: url('media/logo.png') 8px 8px no-repeat, url('media/metal.png');
+				margin-top: 80px;
+			}
+			input
+			{
+				border: 2px solid #444;
+				border-radius: 20px;
+				box-shadow: 0 0 20px #444 inset;
+				margin: 4px;
+				text-align: center;
+			}
+			input, p
+			{
+				color: #444;
+				font: 1em bit2shift;
+				text-shadow:
+					  -1px 0   2px #CCC,
+					  +1px 0   2px #CCC,
+					0 -1px     2px #CCC,
+					0 +1px     2px #CCC;
+			}
+		</style>
+	</head>
+	<body id="guest">
+		<p>Here, have these cookies for the effort of trying to hack this page!</p>
+		<img src="media/cookies.png" alt="cookies"/>
+	</body>
+	<body id="user">
+		<p>Press the button to get a new Personal UUID</p>
+		<form action="." method="post">
+			<input type="submit" value="Generate"/>
+			<br/>
+			<input type="text" size="32" onclick="this.select();" readonly="readonly"/>
+		</form>
+		<p>Save the new UUID on a text file for later use.</p>
+	</body>
+	<body id="admin">
+		<p>You know the drill</p>
+		<form action="." method="post">
+			<input type="text" name="name" maxlength="16" size="17"/>
+			<input type="submit" value="Generate"/>
+			<br/>
+			<input type="text" size="32" onclick="this.select();" readonly="readonly"/>
+		</form>
+		<p>heyyeyaaeyaaaeyaeyaa...</p>
+	</body>
+</layout>
