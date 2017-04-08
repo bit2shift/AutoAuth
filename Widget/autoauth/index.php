@@ -6,7 +6,6 @@ $doc->load('xhtml/layout.xml', LIBXML_DTDVALID);
 if(!$doc->validate())
 	die('Invalid XML layout.');
 
-global $user_info;
 $admin = &$user_info['is_admin'];
 $guest = &$user_info['is_guest'];
 
