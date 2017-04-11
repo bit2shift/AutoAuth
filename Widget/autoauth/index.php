@@ -1,4 +1,7 @@
 <?php
+if(count($_GET))
+	return header('Location: .');
+
 require('../SSI.php');
 
 $doc = new DOMDocument();
