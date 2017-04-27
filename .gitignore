@@ -1,3 +1,6 @@
+# ignore bin subfolders
+*/bin
+
 # ignore SMF files
 Widget/*
 !Widget/.buildpath
