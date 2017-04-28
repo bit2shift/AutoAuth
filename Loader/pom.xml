@@ -1,0 +1,33 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>bit2shift.autoauth.loader</groupId>
+	<artifactId>AutoAuth</artifactId>
+	<version>13</version>
+	<repositories>
+		<repository>
+			<id>mc-libs</id>
+			<url>https://libraries.minecraft.net/</url>
+		</repository>
+	</repositories>
+	<build>
+		<sourceDirectory>src</sourceDirectory>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.5.1</version>
+				<configuration>
+					<source/>
+					<target/>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<dependencies>
+		<dependency>
+			<groupId>net.minecraft</groupId>
+			<artifactId>launchwrapper</artifactId>
+			<version>1.12</version>
+		</dependency>
+	</dependencies>
+</project>
