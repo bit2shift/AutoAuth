@@ -4,25 +4,37 @@
 	<groupId>bit2shift.autoauth.loader</groupId>
 	<artifactId>AutoAuth</artifactId>
 	<version>13</version>
+	<build>
+		<sourceDirectory>src</sourceDirectory>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.6.1</version>
+				<configuration>
+					<source/>
+					<target/>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.0.2</version>
+				<configuration>
+					<archive>
+						<manifestEntries>
+							<TweakClass>${project.groupId}.HotLoad</TweakClass>
+							<TweakOrder>2147483647</TweakOrder>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 	<repositories>
 		<repository>
 			<id>mc-libs</id>
 			<url>https://libraries.minecraft.net/</url>
 		</repository>
 	</repositories>
-	<build>
-		<sourceDirectory>src</sourceDirectory>
-		<plugins>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.5.1</version>
-				<configuration>
-					<source/>
-					<target/>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
 	<dependencies>
 		<dependency>
 			<groupId>net.minecraft</groupId>
