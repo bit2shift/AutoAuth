@@ -5,7 +5,8 @@ if(count($_GET))
 require('../SSI.php');
 
 $doc = new DOMDocument();
-$doc->load('xhtml/layout.xml', LIBXML_DTDVALID);
+$doc->resolveExternals = true;
+$doc->load('xhtml/layout.xml');
 if(!$doc->validate())
 	die('Invalid XML layout.');
 
