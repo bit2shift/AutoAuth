@@ -1,6 +1,9 @@
 <?php
-if(count($_GET))
-	return header('Location: .');
+if(isset($_GET['ssi_function']))
+{
+	unset($_GET['ssi_function']);
+	return header('Location: ?' . http_build_query($_GET));
+}
 
 require('../SSI.php');
 
