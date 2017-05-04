@@ -41,7 +41,7 @@ $html->formatOutput = true;
 
 if(!$guest && ($_SERVER['REQUEST_METHOD'] === 'POST'))
 {
-	$out = $xp->query('.//input[@readonly]', $html)->item(0);
+	$out = (new DOMXPath($html))->query('.//input[@readonly]')->item(0);
 
 	$name = ($admin ? $_POST['name'] : $user_info['username']);
 	if(!strlen($name))
