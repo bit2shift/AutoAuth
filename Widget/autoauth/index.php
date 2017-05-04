@@ -6,9 +6,11 @@ if(isset($_GET['ssi_function']))
 }
 
 require('../SSI.php');
+header('Content-Type: application/xhtml+xml; charset=utf-8');
 
 $doc = new DOMDocument();
 $doc->resolveExternals = true;
+$doc->preserveWhiteSpace = false;
 $doc->load('xhtml/layout.xml');
 if(!$doc->validate())
 	die('Invalid XML layout.');
@@ -18,10 +20,24 @@ $guest = &$user_info['is_guest'];
 
 $id = ($admin ? 'admin' : ($guest ? 'guest' : 'user'));
 
+$html = $doc->implementation->createDocument
+(
+	null,
+	'html',
+	$doc->implementation->createDocumentType
+	(
+		'html',
+		'-//W3C//DTD XHTML 1.0 Transitional//EN',
+		'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'
+	)
+);
+
 $xp = new DOMXPath($doc);
-$html = $doc->createElement('html');
-$html->appendChild($xp->query('//head')->item(0));
-$html->appendChild($xp->query("//body[@id='$id']")->item(0));
+$html->documentElement->appendChild($html->importNode($xp->query('//head')->item(0), true));
+$html->documentElement->appendChild($html->importNode($xp->query("//body[@id='$id']")->item(0), true));
+
+$html->encoding = 'utf-8';
+$html->formatOutput = true;
 
 if(!$guest && ($_SERVER['REQUEST_METHOD'] === 'POST'))
 {
@@ -51,8 +67,10 @@ if(!$guest && ($_SERVER['REQUEST_METHOD'] === 'POST'))
 	}
 }
 
-echo preg_replace_callback(
-	array_map(
+echo preg_replace_callback
+(
+	array_map
+	(
 		function($str)
 		{
 			return '/' . preg_quote($str, '/') . '/';
@@ -65,6 +83,6 @@ echo preg_replace_callback(
 		$data = base64_encode(file_get_contents($match[0]));
 		return "data:$mime;base64,$data";
 	},
-	$doc->saveXML($html)
+	$html->saveXML()
 );
 ?>
