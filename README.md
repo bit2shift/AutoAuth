@@ -13,5 +13,5 @@ This is a three-part project composed by:
 Everytime the _Loader_ is initialised, it fetches the _Mod_ `.jar` from the latest release in this repository.  
 The _Loader_ is always released as "Pre-release" to distinguish it from _Mod_ releases.
 
-A piece of history is included in `[CHANGELOG.old](CHANGELOG.old)` along with the original forum post:  
+A piece of history is included in [`CHANGELOG.old`](CHANGELOG.old) along with the original forum post:  
 ![](https://cloud.githubusercontent.com/assets/6282023/25702435/e0de5cca-30c8-11e7-9d48-9a31fb731979.png)
