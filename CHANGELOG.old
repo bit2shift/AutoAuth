@@ -1,0 +1,32 @@
+4.0
+- Not an actual build, it's a turning point on the codebase, full rewrite
+- The coremod is divided into 2 modules: Loader and Mod
+- The Loader module, having a fixed version, acts as bootloader for the Mod, downloading the latest build artifact if needed (auto-update)
+- Both modules are expected to not use any minecraft source code directly, ASM is used for that purpose
+
+3.26 -> 3.37
+- This build line is doomed, needs full overhaul
+
+3.25
+- Small mistake on SQL string (forgot to remove extra comma)
+- Fixed auto-updater not deleting old jar
+
+3.24
+- Removed URL check for cached (existing) player skin/cape links
+
+3.23
+- Auto-update works now
+- Added a condition to prevent the server-side from auto-updating and screwing itself
+
+3.13 -> 3.22
+- Implemented URL checks for skin and cape links, defaulting to Mojang (aka premium) on invalid
+- Caching mechanism (forums -> AADB.players) was overhauled
+
+3.1 -> 3.12
+- 3.X legacy versions
+
+2.X
+- Idealized, but not implemented
+
+1.X
+- Initial proof of concept
