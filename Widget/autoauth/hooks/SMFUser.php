@@ -30,4 +30,3 @@ class SMFUser extends AUser
 		return ($user_info['is_admin'] ? 'admin' : ($user_info['is_guest'] ? 'guest' : 'user'));
 	}
 }
-?>

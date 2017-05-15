@@ -25,4 +25,3 @@ abstract class AUser
 		return $this->$name();
 	}
 }
-?>

@@ -85,4 +85,3 @@ echo preg_replace_callback
 	},
 	$html->saveXML()
 );
-?>
