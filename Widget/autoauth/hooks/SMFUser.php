@@ -1,7 +1,7 @@
 <?php
 namespace hooks;
 
-class SMFUser extends AUser
+class SMFUser implements IUser
 {
 	/**
 	 * Create a new SMFUser
