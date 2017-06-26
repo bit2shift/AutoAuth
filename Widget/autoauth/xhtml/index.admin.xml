@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>AutoAuth</title>
+		<link href="media/default.css" rel="stylesheet"/>
+	</head>
+	<body>
+		<p>You know the drill.</p>
+		<form action="" method="post">
+			<input type="text" name="name" maxlength="16" size="17"/>
+			<input type="submit" value="Generate"/>
+			<br/>
+			<input type="text" size="32" onclick="this.select();" readonly="readonly"/>
+		</form>
+		<p>heyyeyaaeyaaaeyaeyaa...</p>
+	</body>
+</html>
