@@ -1,11 +1,11 @@
 <?php
 namespace hooks;
 
-class SMFUser implements IUser
+class SMFHook implements IHook
 {
 	/**
-	 * Create a new SMFUser
-	 * @param string $boarddir path to the forum's folder
+	 * Create a new SMFHook.
+	 * @param string $boarddir path to the forum's folder.
 	 */
 	function __construct($boarddir)
 	{

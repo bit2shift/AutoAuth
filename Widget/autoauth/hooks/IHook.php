@@ -1,7 +1,7 @@
 <?php
 namespace hooks;
 
-interface IUser
+interface IHook
 {
 	/**
 	 * Name of this user.
@@ -10,7 +10,7 @@ interface IUser
 	function name();
 
 	/**
-	 * One of ['admin', 'user', 'guest']
+	 * Either 'admin', 'user' or 'guest'.
 	 * @return string
 	 */
 	function role();
