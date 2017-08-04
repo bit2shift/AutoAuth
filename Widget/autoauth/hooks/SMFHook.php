@@ -18,13 +18,13 @@ class SMFHook implements IHook
 		require("$boarddir/SSI.php");
 	}
 
-	function name()
+	function userName()
 	{
 		global $user_info;
 		return $user_info['username'];
 	}
 
-	function role()
+	function userRole()
 	{
 		global $user_info;
 		return ($user_info['is_admin'] ? 'admin' : ($user_info['is_guest'] ? 'guest' : 'user'));

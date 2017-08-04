@@ -4,14 +4,14 @@ namespace hooks;
 interface IHook
 {
 	/**
-	 * Name of this user.
+	 * Name of the logged-in user.
 	 * @return string
 	 */
-	function name();
+	function userName();
 
 	/**
 	 * Either 'admin', 'user' or 'guest'.
 	 * @return string
 	 */
-	function role();
+	function userRole();
 }

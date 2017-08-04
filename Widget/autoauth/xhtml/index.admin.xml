@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<title>AutoAuth</title>
-		<link href="media/default.css" rel="stylesheet"/>
+		<link href="«media/default.css»" rel="stylesheet"/>
 	</head>
 	<body>
 		<p>You know the drill.</p>
