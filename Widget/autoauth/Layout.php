@@ -14,6 +14,13 @@ class Layout
 		}
 	}
 
+	private function uri($path)
+	{
+		$mime = $this->mime($path);
+		$data = base64_encode((strpos($mime, 'text/') === 0) ? $this->embed($path) : file_get_contents($path));
+		return "data:$mime;base64,$data";
+	}
+
 	private function embed($path)
 	{
 		return preg_replace_callback
@@ -21,17 +28,10 @@ class Layout
 			'/«([^«»]++)»/',
 			function($match)
 			{
-				$mime = $this->mime($match[1]);
-				$data = base64_encode((strpos($mime, 'text/') === 0) ? $this->embed($match[1]) : file_get_contents($match[1]));
-				return "data:$mime;base64,$data";
+				return $this->uri($match[1]);
 			},
 			file_get_contents($path)
 		);
-	}
-
-	function test_embed($path)
-	{
-		echo $this->embed($path);
 	}
 
 	/**
