@@ -1,5 +1,7 @@
 <?php
-class Layout
+namespace layout;
+
+class Page
 {
 	private $cache;
 
@@ -10,7 +12,7 @@ class Layout
 		case 'css': return 'text/css';
 		case 'png': return 'image/png';
 		case 'ttf': return 'application/x-font-ttf';
-		default:    return (new finfo(FILEINFO_MIME_TYPE))->file($path);
+		default:    return (new \finfo(FILEINFO_MIME_TYPE))->file($path);
 		}
 	}
 
