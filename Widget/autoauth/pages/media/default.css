@@ -1,12 +1,12 @@
 @font-face
 {
 	font-family: bit2shift;
-	src: url('«media/bit2shift.ttf»');
+	src: url('«bit2shift.ttf»');
 }
 
 body
 {
-	background: url('«media/logo.png»') 8px 8px no-repeat, url('«media/metal.png»');
+	background: url('«logo.png»') 8px 8px no-repeat, url('«metal.png»');
 	margin-top: 80px;
 }
 
