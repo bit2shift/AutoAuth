@@ -1,10 +1,13 @@
 <?php
 namespace layout;
 
-class Page
+class Page extends \DOMDocument
 {
-	private $cache;
-
+	/**
+	 * Fast MIME-type query for known file extensions.
+	 * @param string $path
+	 * @return string
+	 */
 	private function mime($path)
 	{
 		switch(pathinfo($path, PATHINFO_EXTENSION))
@@ -16,6 +19,11 @@ class Page
 		}
 	}
 
+	/**
+	 * Transforms a file into a data URI.
+	 * @param string $path
+	 * @return string
+	 */
 	private function uri($path)
 	{
 		$mime = $this->mime($path);
@@ -23,30 +31,52 @@ class Page
 		return "data:$mime;base64,$data";
 	}
 
+	/**
+	 * Embeds all occurrences of «file» into data URIs.
+	 * @param string $path
+	 * @return string
+	 */
 	private function embed($path)
 	{
 		return preg_replace_callback
 		(
 			'/«([^«»]++)»/',
-			function($match)
+			function($match) use ($path)
 			{
-				return $this->uri($match[1]);
+				return $this->uri(dirname($path) . "/$match[1]");
 			},
 			file_get_contents($path)
 		);
 	}
 
 	/**
-	 * Creates a new instance based on the given folder.
-	 * @param string $dir
+	 * Instantiates a page from a given layout file.
+	 * Schema validation of the layout is cached.
+	 * @param string $path
 	 */
-	function __construct($dir)
+	function __construct($path)
 	{
-		$cache = "$dir/.cache/";
+		parent::__construct();
 
-		if(!is_dir($cache) && !mkdir($cache, 0700))
+		$this->formatOutput = true;
+		$this->preserveWhiteSpace = false;
+
+		$cache = (dirname($path) . '/.cache/');
+		if(!is_dir($cache) && !@mkdir($cache, 0700))
 			trigger_error('Cannot create cache directory. Performance will be affected.');
-		else
-			$this->cache = $cache;
+
+		$src = $this->embed($path);
+		if(!$this->loadXML($src))
+			throw new \DOMException("Cannot load '$path'");
+
+		$filesum = ($cache . basename($path) . '.sha256');
+		$checksum = hash('sha256', $src);
+		if(@file_get_contents($filesum) !== $checksum)
+		{
+			if(!$this->schemaValidate(__DIR__ . '/xhtml1-transitional.xsd'))
+				throw new \DOMException("Document in '$path' is invalid");
+			else
+				@file_put_contents($filesum, $checksum);
+		}
 	}
 }
