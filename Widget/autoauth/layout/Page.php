@@ -1,7 +1,7 @@
 <?php
 namespace layout;
 
-class Page extends \DOMDocument
+class Page
 {
 	/**
 	 * Fast MIME-type query for known file extensions.
@@ -50,33 +50,45 @@ class Page extends \DOMDocument
 	}
 
 	/**
+	 * @var \DOMDocument
+	 */
+	private $layout;
+
+	/**
 	 * Instantiates a page from a given layout file.
-	 * Schema validation of the layout is cached.
+	 * Layout validation is cached in a sibling folder.
 	 * @param string $path
 	 */
 	function __construct($path)
 	{
-		parent::__construct();
+		$source = $this->embed($path);
 
-		$this->formatOutput = true;
-		$this->preserveWhiteSpace = false;
+		$this->layout = new \DOMDocument();
+		$this->layout->formatOutput = true;
+		$this->layout->preserveWhiteSpace = false;
+		if(!$this->layout->loadXML($source))
+			throw new \DOMException("Cannot load '$path'");
 
 		$cache = (dirname($path) . '/.cache/');
 		if(!is_dir($cache) && !@mkdir($cache, 0700))
 			trigger_error('Cannot create cache directory. Performance will be affected.');
 
-		$src = $this->embed($path);
-		if(!$this->loadXML($src))
-			throw new \DOMException("Cannot load '$path'");
-
 		$filesum = ($cache . basename($path) . '.sha256');
-		$checksum = hash('sha256', $src);
-		if(@file_get_contents($filesum) !== $checksum)
+		if(@file_get_contents($filesum) !== ($checksum = hash('sha256', $source)))
 		{
-			if(!$this->schemaValidate(__DIR__ . '/xhtml1-transitional.xsd'))
+			if(!$this->layout->schemaValidate(__DIR__ . '/xhtml1-transitional.xsd'))
 				throw new \DOMException("Document in '$path' is invalid");
 			else
 				@file_put_contents($filesum, $checksum);
 		}
+	}
+
+	/**
+	 * Display the page, as XHTML.
+	 */
+	function display()
+	{
+		header('Content-Type: application/xhtml+xml; charset=UTF-8');
+		echo $this->layout->saveXML();
 	}
 }
