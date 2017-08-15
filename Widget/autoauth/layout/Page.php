@@ -8,7 +8,7 @@ class Page
 	 * @param string $path
 	 * @return string
 	 */
-	private function mime($path)
+	private static function mime($path)
 	{
 		switch(pathinfo($path, PATHINFO_EXTENSION))
 		{
@@ -24,10 +24,10 @@ class Page
 	 * @param string $path
 	 * @return string
 	 */
-	private function uri($path)
+	private static function uri($path)
 	{
-		$mime = $this->mime($path);
-		$data = base64_encode((strpos($mime, 'text/') === 0) ? $this->embed($path) : file_get_contents($path));
+		$mime = self::mime($path);
+		$data = base64_encode((strpos($mime, 'text/') === 0) ? self::embed($path) : file_get_contents($path));
 		return "data:$mime;base64,$data";
 	}
 
@@ -36,14 +36,14 @@ class Page
 	 * @param string $path
 	 * @return string
 	 */
-	private function embed($path)
+	private static function embed($path)
 	{
 		return preg_replace_callback
 		(
 			'/«([^«»]++)»/',
-			function($match) use ($path)
+			static function($match) use ($path)
 			{
-				return $this->uri(dirname($path) . "/$match[1]");
+				return self::uri(dirname($path) . "/$match[1]");
 			},
 			file_get_contents($path)
 		);
@@ -61,7 +61,7 @@ class Page
 	 */
 	function __construct($path)
 	{
-		$source = $this->embed($path);
+		$source = self::embed($path);
 
 		$this->layout = new \DOMDocument();
 		$this->layout->formatOutput = true;
