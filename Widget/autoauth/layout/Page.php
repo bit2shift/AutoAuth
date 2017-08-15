@@ -69,6 +69,8 @@ class Page
 		if(!$this->layout->loadXML($source))
 			throw new \DOMException("Cannot load '$path'");
 
+		clearstatcache();
+
 		$cache = (dirname($path) . '/.cache/');
 		if(!is_dir($cache) && !@mkdir($cache, 0700))
 			trigger_error('Cannot create cache directory. Performance will be affected.');
