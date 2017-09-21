@@ -1,87 +1,33 @@
 <?php
-if(isset($_GET['ssi_function']))
+$hook = require('config.php');
+
+$layout = new layout\Page("pages/index.{$hook->userRole()}.xml");
+
+if($_SERVER['REQUEST_METHOD'] === 'POST')
 {
-	unset($_GET['ssi_function']);
-	return header('Location: ?' . http_build_query($_GET));
-}
+	switch($hook->userRole())
+	{
+	case 'admin':
+		$name = $_POST['name'];
+		break;
 
-require('../SSI.php');
-header('Content-Type: application/xhtml+xml; charset=utf-8');
+	case 'user':
+		$name = $hook->userName();
+		break;
 
-$doc = new DOMDocument();
-$doc->resolveExternals = true;
-$doc->preserveWhiteSpace = false;
-$doc->load('xhtml/layout.xml');
-if(!$doc->validate())
-	die('Invalid XML layout.');
+	default:
+		return;
+	}
 
-$admin = &$user_info['is_admin'];
-$guest = &$user_info['is_guest'];
+	$out = $layout->{'//html:input[@readonly]'}->item(0);
 
-$id = ($admin ? 'admin' : ($guest ? 'guest' : 'user'));
-
-$html = $doc->implementation->createDocument
-(
-	null,
-	'html',
-	$doc->implementation->createDocumentType
-	(
-		'html',
-		'-//W3C//DTD XHTML 1.0 Transitional//EN',
-		'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'
-	)
-);
-
-$xp = new DOMXPath($doc);
-$html->documentElement->appendChild($html->importNode($xp->query('//head')->item(0), true));
-$html->documentElement->appendChild($html->importNode($xp->query("//body[@id='$id']")->item(0), true));
-
-$html->encoding = 'utf-8';
-$html->formatOutput = true;
-
-if(!$guest && ($_SERVER['REQUEST_METHOD'] === 'POST'))
-{
-	$out = (new DOMXPath($html))->query('.//input[@readonly]')->item(0);
-
-	$name = ($admin ? $_POST['name'] : $user_info['username']);
 	if(!strlen($name))
 		$out->setAttribute('value', 'Username cannot be empty!');
 	else
 	{
-		/*$sock = socket_create(AF_INET, SOCK_STREAM, 0);
-		if(socket_connect($sock, 'localhost', 666))
-		{
-			java_write($sock, 'UUID');
-			java_write($sock, $name);
-			java_write($sock, $context['session_id']);
-
-			$uuid = java_read($sock);
-			socket_close($sock);
-		}
-		else
-			$uuid = 'Error generating new UUID';
-
-		$out->setAttribute('value', $uuid);*/
-
-		$out->setAttribute('value', 'Just kidding, no UUID for you!');
+		//TODO
+		$out->setAttribute('value', "UUID for '$name'");
 	}
 }
 
-echo preg_replace_callback
-(
-	array_map
-	(
-		function($str)
-		{
-			return '/' . preg_quote($str, '/') . '/';
-		},
-		glob('media/*')
-	),
-	function($match)
-	{
-		$mime = mime_content_type($match[0]);
-		$data = base64_encode(file_get_contents($match[0]));
-		return "data:$mime;base64,$data";
-	},
-	$html->saveXML()
-);
+$layout->display();
