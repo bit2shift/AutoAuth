@@ -97,7 +97,7 @@ class Page
 	 * Evaluates a given variable name as XPath.
 	 * Use 'html' as prefix for HTML elements.
 	 * @param string $name
-	 * @return DOMNodeList
+	 * @return \DOMNodeList
 	 */
 	function __get($name)
 	{
