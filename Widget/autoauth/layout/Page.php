@@ -55,6 +55,11 @@ class Page
 	private $layout;
 
 	/**
+	 * @var \DOMXPath
+	 */
+	private $needle;
+
+	/**
 	 * Instantiates a page from a given layout file.
 	 * Layout validation is cached in a sibling folder.
 	 * @param string $path
@@ -83,6 +88,20 @@ class Page
 			else
 				@file_put_contents($filesum, $checksum);
 		}
+
+		$this->needle = new \DOMXPath($this->layout);
+		$this->needle->registerNamespace('html', 'http://www.w3.org/1999/xhtml');
+	}
+
+	/**
+	 * Evaluates a given variable name as XPath.
+	 * Use 'html' as prefix for HTML elements.
+	 * @param string $name
+	 * @return DOMNodeList
+	 */
+	function __get($name)
+	{
+		return $this->needle->query($name);
 	}
 
 	/**
