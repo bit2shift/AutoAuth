@@ -68,6 +68,7 @@ class EmbeddingWrapper
 					if(isset($string))
 					{
 						$string .= $str;
+
 						if(is_file($str = "$path/$string"))
 						{
 							yield '"';
@@ -77,6 +78,7 @@ class EmbeddingWrapper
 						}
 						else
 							yield "\"$string\"";
+
 						unset($string);
 					}
 					else
@@ -168,7 +170,7 @@ class EmbeddingWrapper
 	 */
 	function stream_read($count)
 	{
-		while($this->iterator->valid() && strlen($this->buffer) < $count)
+		while($this->iterator->valid() && (strlen($this->buffer) < $count))
 		{
 			$this->buffer .= $this->iterator->current();
 			$this->iterator->next();
