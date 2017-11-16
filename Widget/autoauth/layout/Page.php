@@ -4,52 +4,6 @@ namespace layout;
 class Page
 {
 	/**
-	 * Fast MIME-type query for known file extensions.
-	 * @param string $path
-	 * @return string
-	 */
-	private static function mime($path)
-	{
-		switch(pathinfo($path, PATHINFO_EXTENSION))
-		{
-		case 'css': return 'text/css';
-		case 'png': return 'image/png';
-		case 'ttf': return 'application/x-font-ttf';
-		default:    return (new \finfo(FILEINFO_MIME_TYPE))->file($path);
-		}
-	}
-
-	/**
-	 * Transforms a file into a data URI.
-	 * @param string $path
-	 * @return string
-	 */
-	private static function uri($path)
-	{
-		$mime = self::mime($path);
-		$data = base64_encode((strpos($mime, 'text/') === 0) ? self::embed($path) : file_get_contents($path));
-		return "data:$mime;base64,$data";
-	}
-
-	/**
-	 * Embeds all occurrences of «file» into data URIs.
-	 * @param string $path
-	 * @return string
-	 */
-	private static function embed($path)
-	{
-		return preg_replace_callback
-		(
-			'/«([^«»]++)»/',
-			static function($match) use ($path)
-			{
-				return self::uri(dirname($path) . "/$match[1]");
-			},
-			file_get_contents($path)
-		);
-	}
-
-	/**
 	 * @var \DOMDocument
 	 */
 	private $layout;
@@ -66,12 +20,12 @@ class Page
 	 */
 	function __construct($path)
 	{
-		$source = self::embed($path);
+		stream_wrapper_register('embed', EmbeddingWrapper::class);
 
 		$this->layout = new \DOMDocument();
 		$this->layout->formatOutput = true;
 		$this->layout->preserveWhiteSpace = false;
-		if(!$this->layout->loadXML($source))
+		if(!$this->layout->load("embed://$path"))
 			throw new \DOMException("Cannot load '$path'");
 
 		clearstatcache();
@@ -81,7 +35,7 @@ class Page
 			trigger_error('Cannot create cache directory. Performance will be affected.');
 
 		$filesum = ($cache . basename($path) . '.sha256');
-		if(@file_get_contents($filesum) !== ($checksum = hash('sha256', $source)))
+		if(@file_get_contents($filesum) !== ($checksum = hash_file('sha256', $path)))
 		{
 			if(!$this->layout->schemaValidate(__DIR__ . '/xhtml1-transitional.xsd'))
 				throw new \DOMException("Document in '$path' is invalid");
