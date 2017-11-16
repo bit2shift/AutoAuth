@@ -152,15 +152,8 @@ class EmbeddingWrapper
 		if(($mode !== 'r') && ($mode !== 'rb'))
 			return false;
 
-		$path = self::path($path);
-		$this->iterator = self::embed($path);
-		if(!$this->iterator->valid())
-			return false;
-
-		if($options & STREAM_USE_PATH)
-			$opened_path = stream_resolve_include_path($path);
-
-		return true;
+		$this->iterator = self::embed(self::path($path));
+		return $this->iterator->valid();
 	}
 
 	/**
