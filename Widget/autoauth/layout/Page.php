@@ -15,33 +15,16 @@ class Page
 
 	/**
 	 * Instantiates a page from a given layout file.
-	 * Layout validation is cached in a sibling folder.
 	 * @param string $path
 	 */
 	function __construct($path)
 	{
-		stream_wrapper_register('embed', EmbeddingWrapper::class);
-
 		$this->layout = new \DOMDocument();
-		$this->layout->formatOutput = true;
-		$this->layout->preserveWhiteSpace = false;
-		if(!$this->layout->load("embed://$path"))
+		if(!$this->layout->load($path))
 			throw new \DOMException("Cannot load '$path'");
 
-		clearstatcache();
-
-		$cache = (dirname($path) . '/.cache/');
-		if(!is_dir($cache) && !@mkdir($cache, 0700))
-			trigger_error('Cannot create cache directory. Performance will be affected.');
-
-		$filesum = ($cache . basename($path) . '.sha256');
-		if(@file_get_contents($filesum) !== ($checksum = hash_file('sha256', $path)))
-		{
-			if(!$this->layout->schemaValidate(__DIR__ . '/xhtml1-transitional.xsd'))
-				throw new \DOMException("Document in '$path' is invalid");
-			else
-				@file_put_contents($filesum, $checksum);
-		}
+		if(!$this->layout->validate())
+			throw new \DOMException("Document in '$path' is invalid");
 
 		$this->needle = new \DOMXPath($this->layout);
 		$this->needle->registerNamespace('html', 'http://www.w3.org/1999/xhtml');
