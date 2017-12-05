@@ -6,6 +6,3 @@ Widget/*
 !Widget/.buildpath
 !Widget/.project
 !Widget/autoauth
-
-# ignore cached SHA256 checksums
-Widget/autoauth/*/.cache
