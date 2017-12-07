@@ -67,11 +67,12 @@ class DataURIWrapper
 	}
 
 	/**
-	 * Close a resource
+	 * Tests for end-of-file on a file pointer
+	 * @return boolean
 	 */
-	function stream_close()
+	function stream_eof()
 	{
-		fclose($this->target);
+		return empty($this->mime) && feof($this->target);
 	}
 
 	/**
@@ -87,11 +88,10 @@ class DataURIWrapper
 	}
 
 	/**
-	 * Tests for end-of-file on a file pointer
-	 * @return boolean
+	 * Close a resource
 	 */
-	function stream_eof()
+	function stream_close()
 	{
-		return empty($this->mime) && feof($this->target);
+		fclose($this->target);
 	}
 }
