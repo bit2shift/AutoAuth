@@ -10,30 +10,6 @@ class EmbeddingWrapper
 	const CHUNK_SIZE = (1 << 12);
 
 	/**
-	 * Transforms a file into a data URI.
-	 * @param string $path
-	 * @return \Generator
-	 */
-	private static function uri($path)
-	{
-		$mime = 'data:' . self::mime($path);
-		if(strpos($mime, 'text/'))
-		{
-			yield "$mime;charset=UTF-8,";
-			foreach(self::embed($path) as $str)
-				yield rawurlencode($str);
-		}
-		elseif($handle = fopen($path, 'rb'))
-		{
-			yield "$mime;base64,";
-			stream_filter_append($handle, 'convert.base64-encode');
-			while(!feof($handle))
-				yield fread($handle, self::CHUNK_SIZE);
-			fclose($handle);
-		}
-	}
-
-	/**
 	 * Embeds all occurrences of «file» into data URIs.
 	 * @param string $path
 	 * @return \Generator
