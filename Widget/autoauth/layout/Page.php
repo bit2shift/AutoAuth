@@ -4,22 +4,6 @@ namespace layout;
 class Page
 {
 	/**
-	 * Fast MIME-type query for known file extensions.
-	 * @param string $path
-	 * @return string
-	 */
-	private static function mime($path)
-	{
-		switch(pathinfo($path, PATHINFO_EXTENSION))
-		{
-		case 'css': return 'text/css';
-		case 'png': return 'image/png';
-		case 'ttf': return 'application/x-font-ttf';
-		default:    return (new \finfo(FILEINFO_MIME_TYPE))->file($path);
-		}
-	}
-
-	/**
 	 * @var \DOMDocument
 	 */
 	private $layout;
