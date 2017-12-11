@@ -1,7 +1,7 @@
 <?php
 namespace filters;
 
-class URLEncode extends \php_user_filter
+final class URLEncode extends \php_user_filter
 {
 	function filter($in, $out, &$consumed, $closing)
 	{
