@@ -11,8 +11,7 @@ final class URLDecode extends \php_user_filter
 		{
 			$consumed += $bucket->datalen;
 			@list($bucket->data, $this->partial) = preg_split('/(%.?)$/', "$this->partial$bucket->data", null, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
-			$bucket->data = rawurldecode($bucket->data);
-			stream_bucket_append($out, $bucket);
+			stream_bucket_append($out, stream_bucket_new($this->stream, rawurldecode($bucket->data)));
 		}
 
 		if($closing)
