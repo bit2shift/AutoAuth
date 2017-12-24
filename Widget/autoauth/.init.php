@@ -24,6 +24,3 @@ stream_filter_register('convert.url-decode', filters\URLDecode::class);
 stream_filter_register('convert.url-encode', filters\URLEncode::class);
 
 stream_wrapper_register('data-uri', layout\DataURIWrapper::class);
-
-// Replace 'SMFHook' with the appropriate class from 'hooks\'
-return new hooks\SMFHook('..');
