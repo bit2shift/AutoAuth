@@ -8,8 +8,7 @@ final class URLEncode extends \php_user_filter
 		while($bucket = stream_bucket_make_writeable($in))
 		{
 			$consumed += $bucket->datalen;
-			$bucket->data = rawurlencode($bucket->data);
-			stream_bucket_append($out, $bucket);
+			stream_bucket_append($out, stream_bucket_new($this->stream, rawurlencode($bucket->data)));
 		}
 		return PSFS_PASS_ON;
 	}
