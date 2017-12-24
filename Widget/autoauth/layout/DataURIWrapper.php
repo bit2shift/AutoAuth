@@ -1,5 +1,5 @@
 <?php
-namespace layout;
+namespace autoauth\layout;
 
 class DataURIWrapper
 {

@@ -1,4 +1,6 @@
 <?php
+namespace autoauth;
+
 return (object)
 [
 	'hook' => (object)

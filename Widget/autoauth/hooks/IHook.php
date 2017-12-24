@@ -1,5 +1,5 @@
 <?php
-namespace hooks;
+namespace autoauth\hooks;
 
 interface IHook
 {

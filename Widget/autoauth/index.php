@@ -1,7 +1,9 @@
 <?php
+namespace autoauth;
+
 $config = require('config.php');
 
-$class = new ReflectionClass($config->hook->class);
+$class = new \ReflectionClass($config->hook->class);
 if(!$class->isSubclassOf(hooks\IHook::class))
 	return http_response_code(500);
 

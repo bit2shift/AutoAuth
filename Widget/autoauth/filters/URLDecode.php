@@ -1,5 +1,5 @@
 <?php
-namespace filters;
+namespace autoauth\filters;
 
 final class URLDecode extends \php_user_filter
 {
