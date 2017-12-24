@@ -1,2 +1,2 @@
 RedirectMatch 404 /autoauth/(?!index).+$
-php_value auto_prepend_file .init.php
+php_value auto_prepend_file .php
