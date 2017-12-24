@@ -3,7 +3,12 @@ libxml_set_external_entity_loader
 (
 	function($public, $system, $context)
 	{
-		return (is_file($system) || (strpos($system, 'file:') === 0)) ? $system : preg_replace('~^.*:/{0,2}~', __DIR__ . '/external/', $system);
+		if((strpos($system, 'file:') === 0) || is_file($system))
+			return $system;
+
+		$host = $path = null;
+		extract(parse_url($system), EXTR_IF_EXISTS);
+		return __DIR__ . "/external/$host$path";
 	}
 );
 
