@@ -1,3 +1,12 @@
 <?php
-// Replace 'SMFHook' with the appropriate class from 'hooks\'
-return new hooks\SMFHook('..');
+return (object)
+[
+	'hook' => (object)
+	[
+		// Replace with the appropriate class from 'hooks\'.
+		'class' => hooks\SMFHook::class,
+
+		// Replace with the appropriate arguments.
+		'args' => ['..']
+	]
+];
