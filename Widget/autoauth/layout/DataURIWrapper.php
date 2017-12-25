@@ -82,6 +82,9 @@ class DataURIWrapper
 	 */
 	function stream_read($count)
 	{
+		if(empty($this->mime))
+			return fread($this->target, $count);
+
 		$out = substr($this->mime, 0, $count);
 		$this->mime = substr($this->mime, $count);
 		return $out . fread($this->target, $count - strlen($out));
