@@ -3,6 +3,8 @@ namespace autoauth\layout;
 
 class DataURIWrapper
 {
+	const SCHEME = 'data-uri';
+
 	/**
 	 * Fast MIME-type query for known file extensions.
 	 * @param string $path
@@ -42,8 +44,7 @@ class DataURIWrapper
 		if($mode[0] !== 'r')
 			return false;
 
-		extract(parse_url($url));
-		$opened_path = "$host$path";
+		$opened_path = substr($url, strlen(self::SCHEME) + 3);
 
 		if($options & STREAM_USE_PATH)
 			$opened_path = stream_resolve_include_path($opened_path);
