@@ -26,6 +26,8 @@ class Page
 		if(!$this->layout->validate())
 			throw new \DOMException("Document in '$path' is invalid");
 
+		$this->layout->documentURI = dirname($path);
+
 		$this->needle = new \DOMXPath($this->layout);
 		$this->needle->registerNamespace('html', 'http://www.w3.org/1999/xhtml');
 	}
@@ -85,7 +87,14 @@ class Page
 
 					case ['img', 'src']:
 						$writer->startAttribute($attribute->name);
-						//TODO Image handler
+
+						if($fp = fopen("data-uri://{$this->layout->documentURI}/$attribute->value", 'r'))
+						{
+							while(!feof($fp))
+								$writer->text(fread($fp, 1024));
+							fclose($fp);
+						}
+
 						$writer->endAttribute();
 						break;
 
