@@ -8,9 +8,8 @@ libxml_set_external_entity_loader
 		if((strpos($system, 'file:') === 0) || is_file($system))
 			return $system;
 
-		$host = $path = null;
-		extract(parse_url($system), EXTR_IF_EXISTS);
-		return __DIR__ . "/external/$host$path";
+		$url = parse_url($system);
+		return __DIR__ . "/external/$url[host]$url[path]";
 	}
 );
 

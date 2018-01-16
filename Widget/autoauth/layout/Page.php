@@ -24,7 +24,10 @@ class Page
 			throw new \DOMException("Cannot load '$path'");
 
 		if(!$this->layout->validate())
-			throw new \DOMException("Document in '$path' is invalid");
+			throw new \DOMException("Document ($path) does not conform to DTD");
+
+		if(!$this->layout->schemaValidate('http://www.w3.org/2002/08/xhtml/xhtml1-transitional.xsd'))
+			throw new \DOMException("Document ($path) does not conform to XML Schema");
 
 		$this->layout->documentURI = dirname($path);
 
