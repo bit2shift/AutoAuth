@@ -1,7 +1,7 @@
 <?php
 namespace autoauth\hooks;
 
-class SMFHook implements IHook
+final class SMFHook implements IHook
 {
 	/**
 	 * Create a new SMFHook.
@@ -28,6 +28,12 @@ class SMFHook implements IHook
 	function userRole()
 	{
 		global $user_info;
-		return ($user_info['is_admin'] ? 'admin' : ($user_info['is_guest'] ? 'guest' : 'user'));
+
+		if($user_info['is_guest'])
+			return 'guest';
+		elseif($user_info['is_admin'])
+			return 'admin';
+		else
+			return 'user';
 	}
 }
