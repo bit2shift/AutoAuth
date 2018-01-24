@@ -2,42 +2,22 @@
 namespace autoauth;
 
 $config = require('config.php');
-
-$class = new \ReflectionClass($config->hook->class);
-if(!$class->isSubclassOf(hooks\IHook::class))
-{
-	http_response_code(500);
-	die("'{$config->hook->class}' is not a valid hook, it needs to implement '" . hooks\IHook::class . "'.");
-}
-
-$hook = $class->newInstanceArgs($config->hook->args);
+$layout = new layout\Page("pages/index.{$config->hook->userRole()}.xml");
 
 if($_SERVER['REQUEST_METHOD'] === 'POST')
 {
-	switch($hook->userRole())
+	$name = $config->hook->userName();
+
+	if($config->hook->userRole() === 'admin')
 	{
-	case 'admin':
-		$name = $_POST['name'];
-		break;
-
-	case 'user':
-		$name = $hook->userName();
-		break;
+		$name = $_POST['name'] ?: $name;
+		$layout->{'//html:input[@maxlength]'}->item(0)->setAttribute('value', $name);
 	}
-}
 
-$layout = new layout\Page("pages/index.{$hook->userRole()}.xml");
-
-if(isset($name))
-{
-	$out = $layout->{'//html:input[@readonly]'}->item(0);
-
-	if(!strlen($name))
-		$out->setAttribute('value', 'Username cannot be empty!');
-	else
+	if(strlen($name))
 	{
 		//TODO
-		$out->setAttribute('value', "UUID for '$name'");
+		$layout->{'//html:input[@readonly]'}->item(0)->setAttribute('value', "UUID for '$name'");
 	}
 }
 

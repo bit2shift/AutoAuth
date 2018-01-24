@@ -3,12 +3,7 @@ namespace autoauth;
 
 return (object)
 [
-	'hook' => (object)
-	[
-		// Replace with the appropriate class from 'hook\'.
-		'class' => hook\SMFHook::class,
-
-		// Replace with the appropriate arguments.
-		'args' => ['..']
-	]
+	// Replace with the appropriate class from 'hook\' and with the appropriate arguments.
+	// 'hook\IHook::class' is an interface; it cannot be used here.
+	'hook' => new hook\SMFHook('..')
 ];
