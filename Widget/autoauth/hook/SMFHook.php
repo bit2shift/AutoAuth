@@ -1,5 +1,5 @@
 <?php
-namespace autoauth\hooks;
+namespace autoauth\hook;
 
 final class SMFHook implements IHook
 {
