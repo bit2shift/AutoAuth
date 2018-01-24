@@ -7,7 +7,7 @@ $class = new \ReflectionClass($config->hook->class);
 if(!$class->isSubclassOf(hooks\IHook::class))
 {
 	http_response_code(500);
-	die("'{$config->hook->class}' is not a valid hook.");
+	die("'{$config->hook->class}' is not a valid hook, it needs to implement '" . hooks\IHook::class . "'.");
 }
 
 $hook = $class->newInstanceArgs($config->hook->args);
