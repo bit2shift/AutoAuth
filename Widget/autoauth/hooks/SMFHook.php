@@ -13,7 +13,7 @@ final class SMFHook implements IHook
 		{
 			unset($_GET['ssi_function']);
 			header('Location: ?' . http_build_query($_GET));
-			exit;
+			die('Begone, ssi_function!');
 		}
 
 		require("$boarddir/SSI.php");
