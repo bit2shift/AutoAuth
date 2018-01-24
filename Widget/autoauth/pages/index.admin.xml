@@ -11,7 +11,7 @@
 			<input type="text" name="name" maxlength="16" size="17"/>
 			<input type="submit" value="Generate"/>
 			<br/>
-			<input type="text" size="32" onclick="this.select();" readonly="readonly"/>
+			<input type="text" size="32" onclick="this.select();document.execCommand('copy');" readonly="readonly"/>
 		</form>
 		<p>heyyeyaaeyaaaeyaeyaa...</p>
 	</body>
