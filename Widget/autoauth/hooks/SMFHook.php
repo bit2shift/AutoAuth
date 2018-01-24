@@ -12,7 +12,8 @@ class SMFHook implements IHook
 		if(isset($_GET['ssi_function']))
 		{
 			unset($_GET['ssi_function']);
-			return header('Location: ?' . http_build_query($_GET));
+			header('Location: ?' . http_build_query($_GET));
+			exit;
 		}
 
 		require("$boarddir/SSI.php");
