@@ -22,11 +22,11 @@ if($_SERVER['REQUEST_METHOD'] === 'POST')
 	case 'user':
 		$name = $hook->userName();
 		break;
-
-	default:
-		return;
 	}
+}
 
+if(isset($name))
+{
 	$out = $layout->{'//html:input[@readonly]'}->item(0);
 
 	if(!strlen($name))
