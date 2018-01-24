@@ -5,11 +5,12 @@ $config = require('config.php');
 
 $class = new \ReflectionClass($config->hook->class);
 if(!$class->isSubclassOf(hooks\IHook::class))
-	return http_response_code(500);
+{
+	http_response_code(500);
+	die("'{$config->hook->class}' is not a valid hook.");
+}
 
 $hook = $class->newInstanceArgs($config->hook->args);
-
-$layout = new layout\Page("pages/index.{$hook->userRole()}.xml");
 
 if($_SERVER['REQUEST_METHOD'] === 'POST')
 {
@@ -24,6 +25,8 @@ if($_SERVER['REQUEST_METHOD'] === 'POST')
 		break;
 	}
 }
+
+$layout = new layout\Page("pages/index.{$hook->userRole()}.xml");
 
 if(isset($name))
 {
