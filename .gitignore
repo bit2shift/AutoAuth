@@ -1,6 +1,11 @@
 # ignore bin subfolders
 */bin
 
+# ignore Maven|MC files
+Loader/jar
+Loader/target
+Loader/tmp
+
 # ignore SMF files
 Widget/*
 !Widget/.buildpath
