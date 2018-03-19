@@ -43,7 +43,7 @@ class DataURIWrapper
 	private $mime;
 
 	/**
-	 * Opens file or URL
+	 * Opens file or URL.
 	 * @param string $url Specifies the URL that was passed to the original function.
 	 * @param string $mode The mode used to open the file, as detailed for fopen().
 	 * @param int $options Holds additional flags set by the streams API. It can hold one or more of the following values OR'd together.
@@ -79,8 +79,8 @@ class DataURIWrapper
 	}
 
 	/**
-	 * Tests for end-of-file on a file pointer
-	 * @return boolean
+	 * Tests for end-of-file on a file pointer.
+	 * @return bool
 	 */
 	function stream_eof()
 	{
@@ -88,7 +88,7 @@ class DataURIWrapper
 	}
 
 	/**
-	 * Read from stream
+	 * Read from stream.
 	 * @param int $count How many bytes of data from the current position should be returned.
 	 * @return string
 	 */
@@ -102,7 +102,7 @@ class DataURIWrapper
 	}
 
 	/**
-	 * Close a resource
+	 * Close a resource.
 	 */
 	function stream_close()
 	{
