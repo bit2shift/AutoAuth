@@ -49,7 +49,7 @@ class DataURIWrapper
 		if($options & STREAM_USE_PATH)
 			$opened_path = stream_resolve_include_path($opened_path);
 
-		if(!$this->target = @fopen($opened_path, 'rb'))
+		if(!$this->target = @fopen($opened_path, $mode))
 			return false;
 
 		$this->mime = 'data:' . self::mime($opened_path);
