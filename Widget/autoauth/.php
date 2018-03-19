@@ -25,3 +25,14 @@ stream_filter_register('convert.url-decode', filters\URLDecode::class);
 stream_filter_register('convert.url-encode', filters\URLEncode::class);
 
 stream_wrapper_register(layout\DataURIWrapper::SCHEME, layout\DataURIWrapper::class);
+
+/**
+ * Slice string at offset.
+ * @param string $string
+ * @param int $offset
+ * @return string[]
+ */
+function str_slice($string, $offset)
+{
+	return [substr($string, 0, $offset), substr($string, $offset)];
+}

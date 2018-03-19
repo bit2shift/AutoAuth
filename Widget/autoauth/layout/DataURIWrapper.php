@@ -22,17 +22,6 @@ class DataURIWrapper
 	}
 
 	/**
-	 * Split string by offset.
-	 * @param string $str
-	 * @param string $off
-	 * @return string[]
-	 */
-	private static function split($str, $off)
-	{
-		return [substr($str, 0, $off), substr($str, $off)];
-	}
-
-	/**
 	 * @var resource
 	 */
 	private $target;
@@ -97,7 +86,7 @@ class DataURIWrapper
 		if(empty($this->mime))
 			return fread($this->target, $count);
 
-		list($out, $this->mime) = self::split($this->mime, $count);
+		list($out, $this->mime) = \autoauth\str_slice($this->mime, $count);
 		return $out . fread($this->target, $count - strlen($out));
 	}
 
