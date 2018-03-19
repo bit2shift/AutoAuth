@@ -5,10 +5,10 @@ final class URLDecode extends \php_user_filter
 {
 	private static function split($string)
 	{
-		if(is_int($position = strpos($string, '%', max(0, strlen($string) - 2))))
-			return [substr($string, 0, $position), substr($string, $position)];
+		if(is_int($offset = strpos($string, '%', max(0, strlen($string) - 2))))
+			return \autoauth\str_slice($string, $offset);
 		else
-			return [$string, ''];
+			return [$string, null];
 	}
 
 	function filter($in, $out, &$consumed, $closing)
