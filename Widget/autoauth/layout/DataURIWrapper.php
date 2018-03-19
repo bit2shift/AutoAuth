@@ -22,6 +22,17 @@ class DataURIWrapper
 	}
 
 	/**
+	 * Split string by offset.
+	 * @param string $str
+	 * @param string $off
+	 * @return string[]
+	 */
+	private static function split($str, $off)
+	{
+		return [substr($str, 0, $off), substr($str, $off)];
+	}
+
+	/**
 	 * @var resource
 	 */
 	private $target;
@@ -86,8 +97,7 @@ class DataURIWrapper
 		if(empty($this->mime))
 			return fread($this->target, $count);
 
-		$out = substr($this->mime, 0, $count);
-		$this->mime = substr($this->mime, $count);
+		list($out, $this->mime) = self::split($this->mime, $count);
 		return $out . fread($this->target, $count - strlen($out));
 	}
 
