@@ -18,7 +18,7 @@ final class URLDecode extends \php_user_filter
 		while($bucket = stream_bucket_make_writeable($in))
 		{
 			$consumed += $bucket->datalen;
-			list($full, $partial) = self::split("$partial$bucket->data");
+			list($full, $partial) = self::split($partial . $bucket->data);
 			stream_bucket_append($out, stream_bucket_new($this->stream, rawurldecode($full)));
 		}
 
