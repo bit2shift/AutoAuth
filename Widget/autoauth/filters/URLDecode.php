@@ -11,23 +11,19 @@ final class URLDecode extends \php_user_filter
 			return [$string, ''];
 	}
 
-	/**
-	 * Holds an incomplete sequence.
-	 * @var string
-	 */
-	private $partial;
-
 	function filter($in, $out, &$consumed, $closing)
 	{
+		static $partial;
+
 		while($bucket = stream_bucket_make_writeable($in))
 		{
 			$consumed += $bucket->datalen;
-			list($bucket->data, $this->partial) = self::split("$this->partial$bucket->data");
-			stream_bucket_append($out, stream_bucket_new($this->stream, rawurldecode($bucket->data)));
+			list($full, $partial) = self::split("$partial$bucket->data");
+			stream_bucket_append($out, stream_bucket_new($this->stream, rawurldecode($full)));
 		}
 
 		if($closing)
-			stream_bucket_append($out, stream_bucket_new($this->stream, rawurldecode($this->partial)));
+			stream_bucket_append($out, stream_bucket_new($this->stream, rawurldecode($partial)));
 
 		return PSFS_PASS_ON;
 	}
