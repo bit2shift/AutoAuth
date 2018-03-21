@@ -1,20 +1,13 @@
 <?php
 namespace autoauth\filters;
 
-final class URLEncode extends \php_user_filter
+final class URLEncode extends \autoauth\util\Filterer
 {
-	function filter($in, $out, &$consumed, $closing)
+	protected function filterer(callable $read, callable $write, $eof)
 	{
-		while($bucket = stream_bucket_make_writeable($in))
-		{
-			$consumed += $bucket->datalen;
-			stream_bucket_append($out, stream_bucket_new($this->stream, rawurlencode($bucket->data)));
-		}
-		return PSFS_PASS_ON;
-	}
+		while(is_string($data = $read(self::BLOCK_SIZE)))
+			$write(rawurlencode($data));
 
-	function onCreate()
-	{
 		return true;
 	}
 }

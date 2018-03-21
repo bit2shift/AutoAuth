@@ -1,7 +1,7 @@
 <?php
 namespace autoauth\filters;
 
-final class URLDecode extends \php_user_filter
+final class URLDecode extends \autoauth\util\Filterer
 {
 	private static function split($string)
 	{
@@ -11,25 +11,19 @@ final class URLDecode extends \php_user_filter
 			return [$string, null];
 	}
 
-	function filter($in, $out, &$consumed, $closing)
+	protected function filterer(callable $read, callable $write, $eof)
 	{
 		static $partial;
 
-		while($bucket = stream_bucket_make_writeable($in))
+		while(is_string($data = $read(self::BLOCK_SIZE)))
 		{
-			$consumed += $bucket->datalen;
-			list($full, $partial) = self::split($partial . $bucket->data);
-			stream_bucket_append($out, stream_bucket_new($this->stream, rawurldecode($full)));
+			list($full, $partial) = self::split($partial . $data);
+			$write(rawurldecode($full));
 		}
 
-		if($closing)
-			stream_bucket_append($out, stream_bucket_new($this->stream, rawurldecode($partial)));
+		if($eof)
+			$write(rawurldecode($partial));
 
-		return PSFS_PASS_ON;
-	}
-
-	function onCreate()
-	{
 		return true;
 	}
 }
