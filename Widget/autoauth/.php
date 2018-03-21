@@ -24,6 +24,8 @@ spl_autoload_register
 stream_filter_register('convert.url-decode', filters\URLDecode::class);
 stream_filter_register('convert.url-encode', filters\URLEncode::class);
 
+stream_filter_register('css_embed_urls', filters\CSSEmbedURLs::class);
+
 stream_wrapper_register(layout\DataURIWrapper::SCHEME, layout\DataURIWrapper::class);
 
 /**
