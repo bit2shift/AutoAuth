@@ -10,6 +10,7 @@ abstract class Filterer extends \php_user_filter
 	 * @param callable $read($count) : string|false
 	 * @param callable $write($data) : void
 	 * @param bool $eof
+	 * @return bool
 	 */
 	protected abstract function filterer(callable $read, callable $write, $eof);
 
@@ -17,30 +18,32 @@ abstract class Filterer extends \php_user_filter
 	{
 		static $input, $output;
 
-		$this->filterer
-		(
-			function($count) use(&$consumed, $in, &$input)
-			{
-				while((strlen($input) < $count) && ($bucket = stream_bucket_make_writeable($in)))
+		if(!$this->filterer
+			(
+				function($count) use(&$consumed, $in, &$input)
 				{
-					$consumed += $bucket->datalen;
-					$input .= $bucket->data;
-				}
+					while((strlen($input) < $count) && ($bucket = stream_bucket_make_writeable($in)))
+					{
+						$consumed += $bucket->datalen;
+						$input .= $bucket->data;
+					}
 
-				list($data, $input) = \autoauth\str_slice($input, $count);
-				return $data;
-			},
-			function($data) use($out, &$output)
-			{
-				list($full, $partial) = \autoauth\str_slice($output .= $data, self::BLOCK_SIZE);
-				if(is_string($partial))
+					list($data, $input) = \autoauth\str_slice($input, $count);
+					return $data;
+				},
+				function($data) use($out, &$output)
 				{
-					stream_bucket_append($out, stream_bucket_new($this->stream, $full));
-					$output = $partial;
-				}
-			},
-			$closing
-		);
+					list($full, $partial) = \autoauth\str_slice($output .= $data, self::BLOCK_SIZE);
+					if(is_string($partial))
+					{
+						stream_bucket_append($out, stream_bucket_new($this->stream, $full));
+						$output = $partial;
+					}
+				},
+				$closing
+			)
+		)
+			return PSFS_ERR_FATAL;
 
 		if($closing)
 			stream_bucket_append($out, stream_bucket_new($this->stream, $output));
