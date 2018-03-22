@@ -25,11 +25,12 @@ final class CSSEmbedURLs extends \autoauth\util\Filterer
 
 				$write('url(');
 
-				if($fp = @fopen('data-uri://' . dirname(stream_get_meta_data($this->stream)['uri']) . "/$file", 'r'))
+				if($uri = \autoauth\util\DataURI::from(dirname(stream_get_meta_data($this->stream)['uri']) . "/$file"))
 				{
-					while(!feof($fp))
-						$write(fread($fp, self::BLOCK_SIZE));
-					fclose($fp);
+					$write($uri->mime);
+					while(!feof($uri->handle))
+						$write(fread($uri->handle, self::BLOCK_SIZE));
+					fclose($uri->handle);
 				}
 				else
 					$write($file);
