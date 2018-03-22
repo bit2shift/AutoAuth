@@ -29,7 +29,8 @@ class Page
 		if(!$this->layout->schemaValidate('http://www.w3.org/2002/08/xhtml/xhtml1-transitional.xsd'))
 			throw new \DOMException("Document ($path) does not conform to XML Schema");
 
-		$this->layout->documentURI = dirname($path);
+		//fix-up from 'file:/...' to 'file://...'
+		$this->layout->documentURI = 'file://' . realpath($path);
 
 		$this->needle = new \DOMXPath($this->layout);
 		$this->needle->registerNamespace('html', 'http://www.w3.org/1999/xhtml');
@@ -84,18 +85,29 @@ class Page
 					{
 					case ['link', 'href']:
 						$writer->startAttribute($attribute->name);
-						//TODO CSS handler
+
+						if($uri = \autoauth\util\DataURI::from(dirname($this->layout->documentURI) . "/$attribute->value"))
+						{
+							stream_filter_prepend($uri->handle, 'css_embed_urls');
+
+							$writer->text($uri->mime);
+							while(!feof($uri->handle))
+								$writer->text(fread($uri->handle, \autoauth\util\Filterer::BLOCK_SIZE));
+							fclose($uri->handle);
+						}
+
 						$writer->endAttribute();
 						break;
 
 					case ['img', 'src']:
 						$writer->startAttribute($attribute->name);
 
-						if($fp = fopen("data-uri://{$this->layout->documentURI}/$attribute->value", 'r'))
+						if($uri = \autoauth\util\DataURI::from(dirname($this->layout->documentURI) . "/$attribute->value"))
 						{
-							while(!feof($fp))
-								$writer->text(fread($fp, 1024));
-							fclose($fp);
+							$writer->text($uri->mime);
+							while(!feof($uri->handle))
+								$writer->text(fread($uri->handle, \autoauth\util\Filterer::BLOCK_SIZE));
+							fclose($uri->handle);
 						}
 
 						$writer->endAttribute();
