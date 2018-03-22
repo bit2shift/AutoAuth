@@ -10,7 +10,7 @@ final class CSSEmbedURLs extends \autoauth\util\Filterer
 		while(is_string($data = $read(self::BLOCK_SIZE)))
 		{
 			$partial .= $data;
-			while(count($str = preg_split('/url\(\s*(("|\')(?:(?!\2)[^\\\\\v]|\\\\\X)+\2|(?:[^"\'()\\\\\s[:^print:]]|\\\\\X)+)\s*\)/', $partial, 2, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE)) > 2)
+			while(count($str = preg_split('/url\(\s*+(("|\')(?:(?!\2)[^\\\\\v]|\\\\\X)++\2|(?:[^"\'()\\\\\s[:^print:]]|\\\\\X)++)\s*+\)/', $partial, 2, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE)) > 2)
 			{
 				$write($str[0]);
 				$file = stripslashes($str[1]);
