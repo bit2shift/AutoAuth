@@ -26,8 +26,6 @@ stream_filter_register('convert.url-encode', filters\URLEncode::class);
 
 stream_filter_register('css_embed_urls', filters\CSSEmbedURLs::class);
 
-stream_wrapper_register(layout\DataURIWrapper::SCHEME, layout\DataURIWrapper::class);
-
 /**
  * Slice string at offset.
  * @param string $string
