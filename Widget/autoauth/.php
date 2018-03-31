@@ -33,14 +33,3 @@ stream_filter_register('convert.url-decode', filters\URLDecode::class);
 stream_filter_register('convert.url-encode', filters\URLEncode::class);
 
 stream_filter_register('css_embed_urls', filters\CSSEmbedURLs::class);
-
-/**
- * Slice string at offset.
- * @param string $string
- * @param int $offset
- * @return string[]
- */
-function str_slice($string, $offset)
-{
-	return [substr($string, 0, $offset), substr($string, $offset)];
-}

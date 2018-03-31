@@ -6,7 +6,7 @@ final class URLDecode extends \autoauth\util\Filterer
 	private static function split($string)
 	{
 		if(is_int($offset = strpos($string, '%', max(0, strlen($string) - 2))))
-			return \autoauth\str_slice($string, $offset);
+			return \autoauth\util\Strings::slice($string, $offset);
 		else
 			return [$string, null];
 	}

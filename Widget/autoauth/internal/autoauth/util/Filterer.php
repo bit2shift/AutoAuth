@@ -28,12 +28,12 @@ abstract class Filterer extends \php_user_filter
 						$input .= $bucket->data;
 					}
 
-					list($data, $input) = \autoauth\str_slice($input, $count);
+					list($data, $input) = Strings::slice($input, $count);
 					return $data;
 				},
 				function($data) use($out, &$output)
 				{
-					list($full, $partial) = \autoauth\str_slice($output .= $data, self::BLOCK_SIZE);
+					list($full, $partial) = Strings::slice($output .= $data, self::BLOCK_SIZE);
 					if(is_string($partial))
 					{
 						stream_bucket_append($out, stream_bucket_new($this->stream, $full));
