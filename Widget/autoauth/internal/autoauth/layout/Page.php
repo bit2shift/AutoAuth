@@ -29,7 +29,7 @@ class Page
 		if(!$this->layout->schemaValidate('http://www.w3.org/2002/08/xhtml/xhtml1-transitional.xsd'))
 			throw new \DOMException("Document ($path) does not conform to XML Schema");
 
-		//fix-up from 'file:/...' to 'file://...'
+		//fix-up from 'file:/...' to 'file:///...'
 		$this->layout->documentURI = preg_replace('~file:/(?!/)~', 'file:///', $this->layout->documentURI);
 
 		$this->needle = new \DOMXPath($this->layout);
