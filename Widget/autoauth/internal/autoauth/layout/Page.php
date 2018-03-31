@@ -30,7 +30,7 @@ class Page
 			throw new \DOMException("Document ($path) does not conform to XML Schema");
 
 		//fix-up from 'file:/...' to 'file://...'
-		$this->layout->documentURI = 'file://' . realpath($path);
+		$this->layout->documentURI = preg_replace('~file:/(?!/)~', 'file:///', $this->layout->documentURI);
 
 		$this->needle = new \DOMXPath($this->layout);
 		$this->needle->registerNamespace('html', 'http://www.w3.org/1999/xhtml');
