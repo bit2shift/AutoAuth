@@ -1,15 +1,13 @@
 <?php
-namespace autoauth;
-
 $config = require('config.php');
 
-if(!$config->hook instanceof hook\IHook)
+if(!$config->hook instanceof autoauth\hook\IHook)
 {
 	http_response_code(500);
-	die(sprintf('"%s" is not a valid hook, it does not implement "%s".', get_class($config->hook), hook\IHook::class));
+	die(sprintf('"%s" is not a valid hook, it does not implement "%s".', get_class($config->hook), autoauth\hook\IHook::class));
 }
 
-$layout = new layout\Page("pages/index.{$config->hook->userRole()}.xml");
+$layout = new autoauth\layout\Page("pages/index.{$config->hook->userRole()}.xml");
 
 if($_SERVER['REQUEST_METHOD'] === 'POST')
 {
