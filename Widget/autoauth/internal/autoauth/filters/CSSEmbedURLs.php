@@ -3,6 +3,8 @@ namespace autoauth\filters;
 
 final class CSSEmbedURLs extends \autoauth\util\Filterer
 {
+	const FILTER_NAME = 'css_embed_urls';
+
 	protected function filterer($eof)
 	{
 		static $partial;

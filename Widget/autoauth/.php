@@ -27,6 +27,6 @@ spl_autoload_register
 	}
 );
 
-stream_filter_register('convert.url-decode', autoauth\filters\URLDecode::class);
-stream_filter_register('convert.url-encode', autoauth\filters\URLEncode::class);
-stream_filter_register('css_embed_urls', autoauth\filters\CSSEmbedURLs::class);
+autoauth\filters\CSSEmbedURLs::register();
+autoauth\filters\URLDecode::register();
+autoauth\filters\URLEncode::register();

@@ -3,6 +3,8 @@ namespace autoauth\filters;
 
 final class URLDecode extends \autoauth\util\Filterer
 {
+	const FILTER_NAME = 'convert.url-decode';
+
 	private static function split($string)
 	{
 		$offset = strpos($string, '%', max(0, strlen($string) - 2));

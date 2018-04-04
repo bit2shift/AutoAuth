@@ -3,6 +3,8 @@ namespace autoauth\filters;
 
 final class URLEncode extends \autoauth\util\Filterer
 {
+	const FILTER_NAME = 'convert.url-encode';
+
 	protected function filterer($eof)
 	{
 		while($data = $this->read())

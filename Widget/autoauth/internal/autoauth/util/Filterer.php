@@ -6,6 +6,15 @@ abstract class Filterer extends \php_user_filter
 	const BLOCK_SIZE = 1 << 10;
 
 	/**
+	 * Registers this filter.
+	 * Derived classes must defined 'FILTER_NAME'.
+	 */
+	static final function register()
+	{
+		stream_filter_register(static::FILTER_NAME, static::class);
+	}
+
+	/**
 	 * Forwarded parameters from filter().
 	 * @var resource $in
 	 * @var resource $out
