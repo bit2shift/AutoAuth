@@ -13,6 +13,9 @@ final class Strings
 	 */
 	static function slice($string, $offset)
 	{
-		return [substr($string, 0, $offset), substr($string, $offset)];
+		if(is_int($offset))
+			return [(string)substr($string, 0, $offset), (string)substr($string, $offset)];
+		else
+			return [(string)$string, ''];
 	}
 }
