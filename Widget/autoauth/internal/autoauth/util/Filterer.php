@@ -60,7 +60,7 @@ abstract class Filterer extends \php_user_filter
 		}
 	}
 
-	function filter($in, $out, &$consumed, $closing)
+	final function filter($in, $out, &$consumed, $closing)
 	{
 		$this->in = $in;
 		$this->out = $out;
