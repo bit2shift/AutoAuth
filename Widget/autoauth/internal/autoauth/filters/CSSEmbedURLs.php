@@ -3,16 +3,16 @@ namespace autoauth\filters;
 
 final class CSSEmbedURLs extends \autoauth\util\Filterer
 {
-	protected function filterer(callable $read, callable $write, $eof)
+	protected function filterer($eof)
 	{
 		static $partial;
 
-		while(is_string($data = $read(self::BLOCK_SIZE)))
+		while($data = $this->read())
 		{
 			$partial .= $data;
 			while(count($str = preg_split('/url\(\s*+(("|\')(?:(?!\2)[^\\\\\v]|\\\\\X)++\2|(?:[^"\'()\\\\\s[:^print:]]|\\\\\X)++)\s*+\)/', $partial, 2, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE)) > 2)
 			{
-				$write($str[0]);
+				$this->write($str[0]);
 				$file = stripslashes($str[1]);
 				$partial = $str[2];
 
@@ -23,24 +23,24 @@ final class CSSEmbedURLs extends \autoauth\util\Filterer
 					$file = substr($file, 1, -1);
 				}
 
-				$write('url(');
+				$this->write('url(');
 
 				if($uri = \autoauth\util\DataURI::from(dirname(stream_get_meta_data($this->stream)['uri']) . "/$file"))
 				{
-					$write($uri->mime);
+					$this->write($uri->mime);
 					while(!feof($uri->handle))
-						$write(fread($uri->handle, self::BLOCK_SIZE));
+						$this->write(fread($uri->handle, self::BLOCK_SIZE));
 					fclose($uri->handle);
 				}
 				else
-					$write($file);
+					$this->write($file);
 
-				$write(')');
+				$this->write(')');
 			}
 		}
 
 		if($eof)
-			$write($partial);
+			$this->write($partial);
 
 		return true;
 	}

@@ -11,18 +11,18 @@ final class URLDecode extends \autoauth\util\Filterer
 			return [$string, null];
 	}
 
-	protected function filterer(callable $read, callable $write, $eof)
+	protected function filterer($eof)
 	{
 		static $partial;
 
-		while(is_string($data = $read(self::BLOCK_SIZE)))
+		while($data = $this->read())
 		{
 			list($full, $partial) = self::split($partial . $data);
-			$write(rawurldecode($full));
+			$this->write(rawurldecode($full));
 		}
 
 		if($eof)
-			$write(rawurldecode($partial));
+			$this->write(rawurldecode($partial));
 
 		return true;
 	}
