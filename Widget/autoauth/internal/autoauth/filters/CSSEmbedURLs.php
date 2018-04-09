@@ -1,7 +1,9 @@
 <?php
 namespace autoauth\filters;
 
-final class CSSEmbedURLs extends \autoauth\util\Filterer
+use autoauth\util;
+
+final class CSSEmbedURLs extends util\Filterer
 {
 	const FILTER_NAME = 'css_embed_urls';
 
@@ -27,13 +29,10 @@ final class CSSEmbedURLs extends \autoauth\util\Filterer
 
 				$this->write('url(');
 
-				if($uri = \autoauth\util\DataURI::from(dirname(stream_get_meta_data($this->stream)['uri']) . "/$file"))
-				{
-					$this->write($uri->mime);
-					while(!feof($uri->handle))
-						$this->write(fread($uri->handle, self::BLOCK_SIZE));
-					fclose($uri->handle);
-				}
+				$uri = util\DataURI::from(dirname(util\Streams::unfilteredURI($this->stream)) . "/$file");
+				if($uri->valid())
+					foreach($uri as $chunk)
+						$this->write($chunk);
 				else
 					$this->write($file);
 

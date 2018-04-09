@@ -1,6 +1,8 @@
 <?php
 namespace autoauth\layout;
 
+use autoauth\util;
+
 class Page
 {
 	/**
@@ -12,6 +14,27 @@ class Page
 	 * @var \DOMXPath
 	 */
 	private $needle;
+
+	/**
+	 * Write URL-like attribute as data URI, if convertible.
+	 * @param \XMLWriter $writer
+	 * @param \DOMAttr $attr
+	 * @param array $filters
+	 */
+	private function embed_attribute(\XMLWriter $writer, \DOMAttr $attr, array $filters = [])
+	{
+		$prefix = count($filters) ? 'php://filter/' . implode('|', $filters) . '/resource=' : '';
+		$uri = util\DataURI::from($prefix . dirname($this->layout->documentURI) . "/$attr->value");
+		if($uri->valid())
+		{
+			$writer->startAttribute($attr->name);
+			foreach($uri as $chunk)
+				$writer->text($chunk);
+			$writer->endAttribute();
+		}
+		else
+			$writer->writeAttribute($attr->name, $attr->value);
+	}
 
 	/**
 	 * Instantiates a page from a given layout file.
@@ -84,33 +107,11 @@ class Page
 					switch([$node->localName, $attribute->name])
 					{
 					case ['link', 'href']:
-						$writer->startAttribute($attribute->name);
-
-						if($uri = \autoauth\util\DataURI::from(dirname($this->layout->documentURI) . "/$attribute->value"))
-						{
-							stream_filter_prepend($uri->handle, 'css_embed_urls');
-
-							$writer->text($uri->mime);
-							while(!feof($uri->handle))
-								$writer->text(fread($uri->handle, \autoauth\util\Filterer::BLOCK_SIZE));
-							fclose($uri->handle);
-						}
-
-						$writer->endAttribute();
+						$this->embed_attribute($writer, $attribute, ['css_embed_urls']);
 						break;
 
 					case ['img', 'src']:
-						$writer->startAttribute($attribute->name);
-
-						if($uri = \autoauth\util\DataURI::from(dirname($this->layout->documentURI) . "/$attribute->value"))
-						{
-							$writer->text($uri->mime);
-							while(!feof($uri->handle))
-								$writer->text(fread($uri->handle, \autoauth\util\Filterer::BLOCK_SIZE));
-							fclose($uri->handle);
-						}
-
-						$writer->endAttribute();
+						$this->embed_attribute($writer, $attribute);
 						break;
 
 					default:
