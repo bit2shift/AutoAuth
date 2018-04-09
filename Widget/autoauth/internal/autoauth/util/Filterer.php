@@ -21,11 +21,29 @@ abstract class Filterer extends \php_user_filter
 	private $in, $out, $consumed;
 
 	/**
-	 * Derived classes implement this.
-	 * @param bool $eof
-	 * @return bool
+	 * Fetch bucket from the input brigade.
+	 * @return string
 	 */
-	protected abstract function filterer($eof);
+	private function read_bucket()
+	{
+		if($bucket = stream_bucket_make_writeable($this->in))
+		{
+			$this->consumed += $bucket->datalen;
+			return $bucket->data;
+		}
+		else
+			return '';
+	}
+
+	/**
+	 * Push bucket to the output brigade.
+	 * @param string $buffer
+	 */
+	private function write_bucket($buffer)
+	{
+		$bucket = stream_bucket_new($this->stream, $buffer);
+		stream_bucket_append($this->out, $bucket);
+	}
 
 	/**
 	 * Reads $count bytes from the input brigade.
@@ -34,18 +52,15 @@ abstract class Filterer extends \php_user_filter
 	 */
 	protected final function read($count = 0)
 	{
-		static $input;
+		static $buffer;
 
-		if(!$count)
+		if($count < 1)
 			$count = Streams::ioChunkSize();
 
-		while((strlen($input) < $count) && ($bucket = stream_bucket_make_writeable($this->in)))
-		{
-			$this->consumed += $bucket->datalen;
-			$input .= $bucket->data;
-		}
+		while((strlen($buffer) < $count) && ($data = $this->read_bucket()))
+			$buffer .= $data;
 
-		list($data, $input) = Strings::slice($input, $count);
+		list($data, $buffer) = Strings::slice($buffer, $count);
 		return $data;
 	}
 
@@ -55,22 +70,36 @@ abstract class Filterer extends \php_user_filter
 	 */
 	protected final function write($data = '')
 	{
-		static $output;
+		static $buffer;
 
-		if($data)
+		if(!$data)
 		{
-			list($data, $output) = Strings::slice($output . $data, Streams::ioChunkSize());
-			if($output)
-				stream_bucket_append($this->out, stream_bucket_new($this->stream, $data));
+			$this->write_bucket($buffer);
+			$buffer = '';
+		}
+		elseif(strlen($data) < Streams::ioChunkSize())
+		{
+			list($data, $buffer) = Strings::slice($buffer . $data, Streams::ioChunkSize());
+			if($buffer)
+				$this->write_bucket($data);
 			else
-				$output = $data;
+				$buffer = $data;
 		}
 		else
 		{
-			stream_bucket_append($this->out, stream_bucket_new($this->stream, $output));
-			$output = '';
+			list($buffer, $data) = Strings::slice($buffer . $data, -Streams::ioChunkSize());
+			$this->write_bucket($buffer);
+			$this->write_bucket($data);
+			$buffer = '';
 		}
 	}
+
+	/**
+	 * Derived classes implement this.
+	 * @param bool $eof
+	 * @return bool
+	 */
+	protected abstract function filterer($eof);
 
 	final function filter($in, $out, &$consumed, $closing)
 	{
@@ -87,6 +116,12 @@ abstract class Filterer extends \php_user_filter
 		return PSFS_PASS_ON;
 	}
 
+	/**
+	 * Derived classes should override onCreate() and onClose()
+	 * instead of implementing the constructor and the destructor.
+	 * {@inheritDoc}
+	 * @see \php_user_filter::onCreate()
+	 */
 	function onCreate()
 	{
 		return true;
