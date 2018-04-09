@@ -3,8 +3,6 @@ namespace autoauth\util;
 
 abstract class Filterer extends \php_user_filter
 {
-	const BLOCK_SIZE = 1 << 10;
-
 	/**
 	 * Registers this filter.
 	 * Derived classes must defined 'FILTER_NAME'.
@@ -34,9 +32,13 @@ abstract class Filterer extends \php_user_filter
 	 * @param int $count
 	 * @return string
 	 */
-	protected final function read($count = self::BLOCK_SIZE)
+	protected final function read($count = 0)
 	{
 		static $input;
+
+		if(!$count)
+			$count = Streams::ioChunkSize();
+
 		while((strlen($input) < $count) && ($bucket = stream_bucket_make_writeable($this->in)))
 		{
 			$this->consumed += $bucket->datalen;
@@ -54,9 +56,10 @@ abstract class Filterer extends \php_user_filter
 	protected final function write($data = '')
 	{
 		static $output;
+
 		if($data)
 		{
-			list($data, $output) = Strings::slice($output . $data, self::BLOCK_SIZE);
+			list($data, $output) = Strings::slice($output . $data, Streams::ioChunkSize());
 			if($output)
 				stream_bucket_append($this->out, stream_bucket_new($this->stream, $data));
 			else
