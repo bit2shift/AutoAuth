@@ -15,9 +15,9 @@ final class Streams
 
 		if(!$size)
 		{
-			$fp = @fopen('php://memory', 'rw');
-			$size = @stream_set_chunk_size($fp, 1);
-			@fclose($fp);
+			$fp = fopen('php://memory', 'rw');
+			$size = stream_set_chunk_size($fp, 1);
+			fclose($fp);
 		}
 
 		return $size;
