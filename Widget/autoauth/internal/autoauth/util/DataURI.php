@@ -17,33 +17,35 @@ final class DataURI
 		case 'css': return 'text/css';
 		case 'png': return 'image/png';
 		case 'ttf': return 'application/x-font-ttf';
-		default:    return (new \finfo(FILEINFO_MIME_TYPE))->file($path);
+		default:    return (new \finfo(FILEINFO_MIME_TYPE))->buffer(file_get_contents($path, false, null, 0, 256));
 		}
 	}
 
 	/**
-	 * Creates an object containing the elements used to write a data
-	 * URI to a stream without the need to load the file into memory.
+	 * Instantiates a data URI generator.
 	 * @param string $path
-	 * @return bool|object {resource $handle, string $mime}
+	 * @return \Generator
 	 */
 	static function from($path)
 	{
 		if(!$handle = @fopen($path, 'rb'))
-			return false;
+			return;
 
 		$mime = 'data:' . self::mime($path);
 		if(strpos($mime, 'text/'))
 		{
-			$mime .= ';charset=UTF-8,';
 			stream_filter_append($handle, 'convert.url-encode');
+			yield "$mime;charset=UTF-8,";
 		}
 		else
 		{
-			$mime .= ';base64,';
 			stream_filter_append($handle, 'convert.base64-encode');
+			yield "$mime;base64,";
 		}
 
-		return (object)['handle' => $handle, 'mime' => $mime];
+		while(!feof($handle))
+			yield fread($handle, Streams::ioChunkSize());
+
+		fclose($handle);
 	}
 }
