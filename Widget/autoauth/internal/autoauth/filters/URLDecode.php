@@ -1,14 +1,16 @@
 <?php
 namespace autoauth\filters;
 
-final class URLDecode extends \autoauth\util\Filterer
+use autoauth\util;
+
+final class URLDecode extends util\Filterer
 {
 	const FILTER_NAME = 'convert.url-decode';
 
 	private static function split($string)
 	{
 		$offset = strpos($string, '%', max(0, strlen($string) - 2));
-		return \autoauth\util\Strings::slice($string, $offset);
+		return util\Strings::slice($string, $offset);
 	}
 
 	protected function filterer($eof)

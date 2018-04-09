@@ -1,7 +1,9 @@
 <?php
 namespace autoauth\filters;
 
-final class URLEncode extends \autoauth\util\Filterer
+use autoauth\util;
+
+final class URLEncode extends util\Filterer
 {
 	const FILTER_NAME = 'convert.url-encode';
 
