@@ -22,7 +22,7 @@ abstract class Filterer extends \php_user_filter
 
 	/**
 	 * Fetch bucket from the input brigade.
-	 * @return string
+	 * @return string|null
 	 */
 	private function read_bucket()
 	{
@@ -31,8 +31,6 @@ abstract class Filterer extends \php_user_filter
 			$this->consumed += $bucket->datalen;
 			return $bucket->data;
 		}
-		else
-			return '';
 	}
 
 	/**
@@ -41,8 +39,7 @@ abstract class Filterer extends \php_user_filter
 	 */
 	private function write_bucket($buffer)
 	{
-		$bucket = stream_bucket_new($this->stream, $buffer);
-		stream_bucket_append($this->out, $bucket);
+		stream_bucket_append($this->out, stream_bucket_new($this->stream, $buffer));
 	}
 
 	/**
@@ -57,7 +54,7 @@ abstract class Filterer extends \php_user_filter
 		if($count < 1)
 			$count = Streams::ioChunkSize();
 
-		while((strlen($buffer) < $count) && ($data = $this->read_bucket()))
+		while((strlen($buffer) < $count) && is_string($data = $this->read_bucket()))
 			$buffer .= $data;
 
 		list($data, $buffer) = Strings::slice($buffer, $count);
@@ -68,11 +65,11 @@ abstract class Filterer extends \php_user_filter
 	 * Writes $data to the output brigade.
 	 * @param string $data
 	 */
-	protected final function write($data = '')
+	protected final function write($data = null)
 	{
 		static $buffer;
 
-		if(!$data)
+		if(is_null($data))
 		{
 			$this->write_bucket($buffer);
 			$buffer = '';
@@ -80,7 +77,7 @@ abstract class Filterer extends \php_user_filter
 		elseif(strlen($data) < Streams::ioChunkSize())
 		{
 			list($data, $buffer) = Strings::slice($buffer . $data, Streams::ioChunkSize());
-			if($buffer)
+			if(is_string($buffer))
 				$this->write_bucket($data);
 			else
 				$buffer = $data;
