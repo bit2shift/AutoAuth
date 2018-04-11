@@ -11,7 +11,7 @@ final class CSSEmbedURLs extends util\Filterer
 	{
 		static $partial;
 
-		while($data = $this->read())
+		while(is_string($data = $this->read()))
 		{
 			$partial .= $data;
 			while(count($str = preg_split('/url\(\s*+(("|\')(?:(?!\2)[^\\\\\v]|\\\\\X)++\2|(?:[^"\'()\\\\\s[:^print:]]|\\\\\X)++)\s*+\)/', $partial, 2, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE)) > 2)
