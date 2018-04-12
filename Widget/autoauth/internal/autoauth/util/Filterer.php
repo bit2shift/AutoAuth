@@ -21,41 +21,20 @@ abstract class Filterer extends \php_user_filter
 	private $in, $out, $consumed;
 
 	/**
-	 * Fetch bucket from the input brigade.
-	 * @return string|null
-	 */
-	private function read_bucket()
-	{
-		if($bucket = stream_bucket_make_writeable($this->in))
-		{
-			$this->consumed += $bucket->datalen;
-			return $bucket->data;
-		}
-	}
-
-	/**
-	 * Push bucket to the output brigade.
-	 * @param string $buffer
-	 */
-	private function write_bucket($buffer)
-	{
-		stream_bucket_append($this->out, stream_bucket_new($this->stream, $buffer));
-	}
-
-	/**
 	 * Reads $count bytes from the input brigade.
+	 * Undefined behaviour if outside [1, Streams::CHUNK_SIZE].
 	 * @param int $count
 	 * @return string|false
 	 */
-	protected final function read($count = 0)
+	protected final function read($count = Streams::CHUNK_SIZE)
 	{
 		static $buffer;
 
-		if($count < 1)
-			$count = Streams::ioChunkSize();
-
-		while((strlen($buffer) < $count) && is_string($data = $this->read_bucket()))
-			$buffer .= $data;
+		while((strlen($buffer) < $count) && ($bucket = stream_bucket_make_writeable($this->in)))
+		{
+			$this->consumed += $bucket->datalen;
+			$buffer .= $bucket->data;
+		}
 
 		list($data, $buffer) = Strings::slice($buffer, $count);
 		return $data;
@@ -69,24 +48,16 @@ abstract class Filterer extends \php_user_filter
 	{
 		static $buffer;
 
-		if(is_null($data))
+		if(isset($data))
 		{
-			$this->write_bucket($buffer);
-			$buffer = '';
-		}
-		elseif(strlen($data) < Streams::ioChunkSize())
-		{
-			list($data, $buffer) = Strings::slice($buffer . $data, Streams::ioChunkSize());
-			if(is_string($buffer))
-				$this->write_bucket($data);
-			else
-				$buffer = $data;
+			$size = strlen($buffer .= $data) & Streams::CHUNK_SIZE_MASK;
+			for($i = 0; $i < $size; $i += Streams::CHUNK_SIZE)
+				stream_bucket_append($this->out, stream_bucket_new($this->stream, substr($buffer, $i, Streams::CHUNK_SIZE)));
+			$buffer = substr($buffer, $size);
 		}
 		else
 		{
-			list($buffer, $data) = Strings::slice($buffer . $data, -Streams::ioChunkSize());
-			$this->write_bucket($buffer);
-			$this->write_bucket($data);
+			stream_bucket_append($this->out, stream_bucket_new($this->stream, $buffer));
 			$buffer = '';
 		}
 	}
