@@ -45,7 +45,7 @@ abstract class Filterer extends \php_user_filter
 	/**
 	 * Reads $count bytes from the input brigade.
 	 * @param int $count
-	 * @return string
+	 * @return string|false
 	 */
 	protected final function read($count = 0)
 	{
