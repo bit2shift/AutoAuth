@@ -44,7 +44,7 @@ final class DataURI
 		}
 
 		while(!feof($handle))
-			yield fread($handle, Streams::ioChunkSize());
+			yield fread($handle, Streams::CHUNK_SIZE);
 
 		fclose($handle);
 	}

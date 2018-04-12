@@ -7,21 +7,15 @@ final class Streams
 
 	/**
 	 * Optimal IO chunk size.
-	 * @return int
+	 * @var int
 	 */
-	static function ioChunkSize()
-	{
-		static $size;
+	const CHUNK_SIZE = (1 << 13);
 
-		if(!$size)
-		{
-			$fp = fopen('php://memory', 'rw');
-			$size = stream_set_chunk_size($fp, 1);
-			fclose($fp);
-		}
-
-		return $size;
-	}
+	/**
+	 * Bit mask to round to the nearest multiple.
+	 * @var int
+	 */
+	const CHUNK_SIZE_MASK = -self::CHUNK_SIZE;
 
 	/**
 	 * Retrieves the URI of a stream and removes any leading "php://filter".
