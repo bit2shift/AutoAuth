@@ -17,7 +17,7 @@ final class URLDecode extends util\Filterer
 	{
 		static $partial;
 
-		while(is_string($data = $this->read()))
+		while(($data = $this->read()) !== false)
 		{
 			list($full, $partial) = self::split($partial . $data);
 			$this->write(rawurldecode($full));

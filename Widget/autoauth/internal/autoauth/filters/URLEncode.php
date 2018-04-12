@@ -9,7 +9,7 @@ final class URLEncode extends util\Filterer
 
 	protected function filterer($eof)
 	{
-		while(is_string($data = $this->read()))
+		while(($data = $this->read()) !== false)
 			$this->write(rawurlencode($data));
 
 		return true;
