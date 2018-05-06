@@ -5,4 +5,5 @@
 Widget/*
 !Widget/.buildpath
 !Widget/.project
+!Widget/.settings
 !Widget/autoauth
