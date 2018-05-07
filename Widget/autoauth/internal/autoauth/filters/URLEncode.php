@@ -7,9 +7,9 @@ final class URLEncode extends util\Filterer
 {
 	const FILTER_NAME = 'convert.url-encode';
 
-	protected function filterer($eof)
+	protected function filterer(bool $eof) : bool
 	{
-		while(($data = $this->read()) !== false)
+		while(strlen($data = $this->read()))
 			$this->write(rawurlencode($data));
 
 		return true;

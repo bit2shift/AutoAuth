@@ -7,11 +7,11 @@ final class CSSEmbedURLs extends util\Filterer
 {
 	const FILTER_NAME = 'css_embed_urls';
 
-	protected function filterer($eof)
+	protected function filterer(bool $eof) : bool
 	{
 		static $partial;
 
-		while(($data = $this->read()) !== false)
+		while(strlen($data = $this->read()))
 		{
 			$partial .= $data;
 			while(count($str = preg_split('/url\(\s*+(("|\')(?:(?!\2)[^\\\\\v]|\\\\\X)++\2|(?:[^"\'()\\\\\s[:^print:]]|\\\\\X)++)\s*+\)/', $partial, 2, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE)) > 2)
