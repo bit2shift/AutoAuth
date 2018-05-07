@@ -1,5 +1,5 @@
 <?php
-function translate_path($original_separator, $path)
+function translate_path(string $original_separator, string $path) : string
 {
 	if($original_separator == DIRECTORY_SEPARATOR)
 		return $path;
@@ -9,9 +9,9 @@ function translate_path($original_separator, $path)
 
 libxml_set_external_entity_loader
 (
-	function($public, $system, $context)
+	function(string $public, string $system, array $context) : string
 	{
-		if((strpos($system, 'file:') === 0) || is_file($system))
+		if((strpos($system, 'file:') === 0) || @file_exists($system))
 			return $system;
 
 		$url = parse_url($system);
@@ -21,7 +21,7 @@ libxml_set_external_entity_loader
 
 spl_autoload_register
 (
-	function($class)
+	function(string $class) : void
 	{
 		require_once __DIR__ . translate_path('\\', "\\internal\\$class.php");
 	}
