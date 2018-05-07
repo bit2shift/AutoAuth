@@ -22,7 +22,7 @@ final class Streams
 	 * @param resource $stream
 	 * @return string
 	 */
-	static function unfilteredURI($stream)
+	static function unfilteredURI($stream) : string
 	{
 		return preg_replace('~php://filter/.+?/resource=~', '', stream_get_meta_data($stream)['uri']);
 	}

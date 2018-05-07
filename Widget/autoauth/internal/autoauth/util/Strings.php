@@ -11,11 +11,11 @@ final class Strings
 	 * @param int $offset
 	 * @return string[]
 	 */
-	static function slice($string, $offset)
+	static function slice(string $string, $offset) : array
 	{
-		if(is_numeric($offset) && ($offset !== strlen($string)))
+		if(is_int($offset))
 			return [substr($string, 0, $offset), substr($string, $offset)];
 		else
-			return [$string, ''];
+			return [$string, false];
 	}
 }

@@ -10,7 +10,7 @@ final class DataURI
 	 * @param string $path
 	 * @return string
 	 */
-	private static function mime($path)
+	private static function mime(string $path) : string
 	{
 		switch(pathinfo($path, PATHINFO_EXTENSION))
 		{
@@ -26,7 +26,7 @@ final class DataURI
 	 * @param string $path
 	 * @return \Generator
 	 */
-	static function from($path)
+	static function from(string $path) : \Generator
 	{
 		if(!$handle = @fopen($path, 'rb'))
 			return;

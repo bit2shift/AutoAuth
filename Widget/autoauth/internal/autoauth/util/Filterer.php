@@ -7,9 +7,13 @@ abstract class Filterer extends \php_user_filter
 	 * Registers this filter.
 	 * Derived classes must defined 'FILTER_NAME'.
 	 */
-	static final function register()
+	static final function register() : void
 	{
-		stream_filter_register(static::FILTER_NAME, static::class);
+		while(!stream_filter_register(static::FILTER_NAME, static::class))
+		{
+			if(!stream_filter_remove(static::FILTER_NAME))
+				die('Filter "' . static::FILTER_NAME . '" cannot be removed. :(');
+		}
 	}
 
 	/**
@@ -24,9 +28,9 @@ abstract class Filterer extends \php_user_filter
 	 * Reads $count bytes from the input brigade.
 	 * Undefined behaviour if outside [1, Streams::CHUNK_SIZE].
 	 * @param int $count
-	 * @return string|false
+	 * @return string
 	 */
-	protected final function read($count = Streams::CHUNK_SIZE)
+	protected final function read(int $count = Streams::CHUNK_SIZE) : string
 	{
 		static $buffer;
 
@@ -44,21 +48,21 @@ abstract class Filterer extends \php_user_filter
 	 * Writes $data to the output brigade.
 	 * @param string $data
 	 */
-	protected final function write($data = null)
+	protected final function write(string $data = null) : void
 	{
 		static $buffer;
 
-		if(isset($data))
+		if($data === null)
+		{
+			stream_bucket_append($this->out, stream_bucket_new($this->stream, $buffer));
+			$buffer = '';
+		}
+		else
 		{
 			$size = strlen($buffer .= $data) & Streams::CHUNK_SIZE_MASK;
 			for($i = 0; $i < $size; $i += Streams::CHUNK_SIZE)
 				stream_bucket_append($this->out, stream_bucket_new($this->stream, substr($buffer, $i, Streams::CHUNK_SIZE)));
 			$buffer = substr($buffer, $size);
-		}
-		else
-		{
-			stream_bucket_append($this->out, stream_bucket_new($this->stream, $buffer));
-			$buffer = '';
 		}
 	}
 
@@ -67,7 +71,7 @@ abstract class Filterer extends \php_user_filter
 	 * @param bool $eof
 	 * @return bool
 	 */
-	protected abstract function filterer($eof);
+	protected abstract function filterer(bool $eof) : bool;
 
 	final function filter($in, $out, &$consumed, $closing)
 	{
@@ -90,7 +94,7 @@ abstract class Filterer extends \php_user_filter
 	 * {@inheritDoc}
 	 * @see \php_user_filter::onCreate()
 	 */
-	function onCreate()
+	function onCreate() : bool
 	{
 		return true;
 	}
