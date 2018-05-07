@@ -21,7 +21,7 @@ class Page
 	 * @param \DOMAttr $attr
 	 * @param array $filters
 	 */
-	private function embed_attribute(\XMLWriter $writer, \DOMAttr $attr, array $filters = [])
+	private function embed_attribute(\XMLWriter $writer, \DOMAttr $attr, array $filters = []) : void
 	{
 		$prefix = count($filters) ? 'php://filter/' . implode('|', $filters) . '/resource=' : '';
 		$uri = util\DataURI::from($prefix . dirname($this->layout->documentURI) . "/$attr->value");
@@ -39,10 +39,12 @@ class Page
 	/**
 	 * Instantiates a page from a given layout file.
 	 * @param string $path
+	 * @throws \DOMException
 	 */
-	function __construct($path)
+	function __construct(string $path)
 	{
 		$this->layout = new \DOMDocument();
+
 		if(!$this->layout->load($path))
 			throw new \DOMException("Cannot load '$path'");
 
@@ -65,27 +67,30 @@ class Page
 	 * @param string $name
 	 * @return \DOMNodeList
 	 */
-	function __get($name)
+	function __get(string $name) : \DOMNodeList
 	{
 		return $this->needle->query($name);
 	}
 
 	/**
 	 * Display the page, as XHTML.
-	 * @return void
 	 */
-	function display()
+	function display() : void
 	{
 		$writer = new \XMLWriter();
+
 		if(!$writer->openUri('php://output'))
-			return http_response_code(500);
+		{
+			http_response_code(500);
+			die('Congratulations for witnessing something impossible of happening.');
+		}
 
 		ob_start('ob_gzhandler');
 		header('Content-Type: application/xhtml+xml; charset=UTF-8');
 
 		$writer->startDocument($this->layout->xmlVersion, $this->layout->xmlEncoding, $this->layout->xmlStandalone ? 'yes' : 'no');
 
-		for($node = $this->layout->firstChild; $node; $node = $node->firstChild ?: $node->nextSibling ?: $node->parentNode->nextSibling)
+		for($node = $this->layout->firstChild; $node !== null; $node = $node->firstChild ?? $node->nextSibling ?? $node->parentNode->nextSibling)
 		{
 			switch($node->nodeType)
 			{
