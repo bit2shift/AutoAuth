@@ -7,7 +7,7 @@ final class SMFHook implements IHook
 	 * Create a new SMFHook.
 	 * @param string $boarddir path to the forum's folder.
 	 */
-	function __construct($boarddir)
+	function __construct(string $boarddir)
 	{
 		if(isset($_GET['ssi_function']))
 		{
@@ -19,21 +19,21 @@ final class SMFHook implements IHook
 		require("$boarddir/SSI.php");
 	}
 
-	function userName()
+	function userName() : string
 	{
 		global $user_info;
 		return $user_info['username'];
 	}
 
-	function userRole()
+	function userRole() : string
 	{
 		global $user_info;
 
 		if($user_info['is_guest'])
-			return 'guest';
+			return self::GUEST;
 		elseif($user_info['is_admin'])
-			return 'admin';
+			return self::ADMIN;
 		else
-			return 'user';
+			return self::USER;
 	}
 }

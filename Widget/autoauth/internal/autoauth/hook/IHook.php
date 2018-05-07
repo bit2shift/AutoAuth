@@ -3,15 +3,19 @@ namespace autoauth\hook;
 
 interface IHook
 {
+	const ADMIN = 'admin';
+	const USER  = 'user';
+	const GUEST = 'guest';
+
 	/**
 	 * Name of the logged-in user.
 	 * @return string
 	 */
-	function userName();
+	function userName() : string;
 
 	/**
-	 * Either 'admin', 'user' or 'guest'.
+	 * Either ADMIN, USER or GUEST.
 	 * @return string
 	 */
-	function userRole();
+	function userRole() : string;
 }
