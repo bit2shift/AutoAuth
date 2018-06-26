@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>AutoAuth</title>
+		<link href="media/default.css" rel="stylesheet"/>
+	</head>
+	<body>
+<?php use autoauth\hook\IHook ?>
+<?php switch($config->hook->userRole()): ?>
+<?php case IHook::ADMIN ?>
+		<p>You know the drill.</p>
+<?php break ?>
+<?php case IHook::USER ?>
+		<p>Request a new Personal UUID.</p>
+<?php break ?>
+<?php case IHook::GUEST ?>
+		<p>Here, have these cookies for the effort of trying to hack this page!</p>
+<?php break ?>
+<?php endswitch ?>
+<?php if($config->hook->userRole() !== IHook::GUEST): ?>
+		<form action="" method="post">
+<?php if($config->hook->userRole() === IHook::ADMIN): ?>
+			<input type="text" name="name" maxlength="16" size="17" value="<?= htmlspecialchars($name) ?>"/>
+<?php endif ?>
+			<input type="submit" value="Generate"/>
+			<br/>
+			<input type="text" size="32" onclick="this.select();document.execCommand('copy');" readonly="readonly" value="<?= htmlspecialchars($uuid) ?>"/>
+		</form>
+<?php endif ?>
+<?php switch($config->hook->userRole()): ?>
+<?php case IHook::ADMIN ?>
+		<p>heyyeyaaeyaaaeyaeyaa...</p>
+<?php break ?>
+<?php case IHook::USER ?>
+		<p>Click the text box to copy its contents.</p>
+<?php break ?>
+<?php case IHook::GUEST ?>
+		<img src="media/cookies.png" alt="cookies"/>
+<?php break ?>
+<?php endswitch ?>
+	</body>
+</html>
